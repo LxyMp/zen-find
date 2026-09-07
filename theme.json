@@ -1,0 +1,12 @@
+{
+  "id": "7d7d01bd-1788-4e0a-a0c9-4aa463a9d9fb",
+  "name": "Zen Find",
+  "description": "A CSS redesign for Zen Browser's native find bar.",
+  "supportsUnload": true,
+  "style": {
+    "chrome": "chrome.css"
+  },
+  "author": "bigxin",
+  "version": "0.1.0",
+  "tags": ["interface", "toolbar"]
+}
