@@ -1,0 +1,43 @@
+[
+  {
+    "property": "uc.findbar.horizontal-position",
+    "label": "查找栏横向位置",
+    "type": "dropdown",
+    "defaultValue": "center",
+    "options": [
+      { "label": "左", "value": "left" },
+      { "label": "中", "value": "center" },
+      { "label": "右", "value": "right" }
+    ]
+  },
+  {
+    "property": "uc.findbar.vertical-position",
+    "label": "查找栏垂直位置",
+    "type": "dropdown",
+    "defaultValue": "top",
+    "options": [
+      { "label": "上", "value": "top" },
+      { "label": "中", "value": "center" },
+      { "label": "下", "value": "bottom" }
+    ]
+  },
+  {
+    "property": "mod.zen-find.background-color",
+    "label": "查找栏背景颜色（CSS 颜色代码）",
+    "type": "string",
+    "defaultValue": "rgba(30, 30, 34, 0.72)"
+  },
+  {
+    "property": "mod.zen-find.background-opacity",
+    "label": "查找栏背景透明度（0 到 1）",
+    "type": "string",
+    "defaultValue": "0.72"
+  },
+  {
+    "property": "uc.findbar.hide-buttons",
+    "label": "隐藏查找栏原生操作按钮",
+    "type": "checkbox",
+    "defaultValue": false
+  }
+]
+
