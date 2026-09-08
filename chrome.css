@@ -4,8 +4,6 @@ findbar {
   --zen-find-y: 0%;
   --zen-find-count-width: min(140px, 40cqw);
   --zen-find-count-right: 114px;
-  --zen-find-glass-tint: color-mix(in srgb, var(--zen-colors-tertiary, Canvas) 88%, var(--zen-colors-secondary, Canvas));
-  --zen-find-opacity: clamp(0, var(--mod-zen-find-background-opacity, 0.96), 1);
   position: absolute !important;
   /* Native grid-area: findbar is a collapsed bottom row when out of flow. */
   grid-area: browserstack !important;
@@ -23,31 +21,14 @@ findbar {
   font-size: 12px;
   gap: 6px;
   align-items: flex-start;
-  border: 1px solid light-dark(rgb(255 255 255 / 80%), rgb(255 255 255 / 20%)) !important;
-  border-radius: calc(var(--zen-border-radius, 7px) + 2px) !important;
+  border: 1px solid var(--zen-colors-border, light-dark(rgb(0 0 0 / 18%), rgb(255 255 255 / 16%))) !important;
+  border-radius: var(--zen-border-radius, 7px) !important;
   color: var(--toolbar-field-text-color, CanvasText) !important;
-  /* Keep the native control out of the background-filter rendering layer. */
-  background: transparent !important;
+  background: rgb(from var(--mod-zen-find-background-color, var(--zen-colors-tertiary, Canvas)) r g b / 1) !important;
   backdrop-filter: none !important;
-  box-shadow: 0 6px 24px light-dark(rgb(0 0 0 / 12%), rgb(0 0 0 / 26%)),
-    inset 0 1px 1px light-dark(rgb(255 255 255 / 90%), rgb(255 255 255 / 16%)),
-    inset 0 -1px light-dark(rgb(0 0 0 / 4%), rgb(0 0 0 / 12%));
+  box-shadow: 0 1px 3px rgb(0 0 0 / 18%),
+    0 8px 24px light-dark(rgb(0 0 0 / 14%), rgb(0 0 0 / 32%));
   transition: none !important;
-}
-
-/* A separate background layer samples behind the bar, not its controls.
- * The positioned/transformed findbar already provides a stacking context;
- * do not add isolation, opacity or filter to its foreground container.
- */
-findbar::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
-  background: rgb(from var(--mod-zen-find-background-color, var(--zen-find-glass-tint)) r g b / var(--zen-find-opacity));
-  backdrop-filter: blur(24px) saturate(115%);
 }
 
 findbar[hidden] {
