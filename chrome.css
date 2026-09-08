@@ -2,7 +2,7 @@
 findbar {
   --zen-find-x: -50%;
   --zen-find-y: 0%;
-  --zen-find-opacity: clamp(0, var(--mod-zen-find-background-opacity, 0.72), 1);
+  --zen-find-opacity: clamp(0, var(--mod-zen-find-background-opacity, 0.96), 1);
   position: absolute !important;
   /* Native grid-area: findbar is a collapsed bottom row when out of flow. */
   grid-area: browserstack !important;
@@ -10,13 +10,14 @@ findbar {
   transform: translate(var(--zen-find-x), var(--zen-find-y)) !important;
   z-index: 10 !important;
   box-sizing: border-box;
-  width: min(680px, calc(100% - 24px));
+  width: min(560px, calc(100% - 24px));
   min-width: 0 !important;
   max-width: calc(100% - 24px);
   max-height: calc(100% - 24px);
   overflow: auto;
   margin: 0 !important;
-  padding: 8px !important;
+  padding: 10px !important;
+  font-size: 12px;
   gap: 6px;
   align-items: flex-start;
   border: 1px solid var(--zen-colors-border, ThreeDShadow) !important;
@@ -25,7 +26,7 @@ findbar {
   /* Replace source alpha so opacity is controlled only by its setting. */
   background: rgb(from var(--mod-zen-find-background-color, var(--zen-colors-secondary, Canvas)) r g b / var(--zen-find-opacity)) !important;
   backdrop-filter: blur(18px) saturate(140%);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 12%), inset 0 1px rgb(255 255 255 / 18%);
   transition: none !important;
 }
 
@@ -34,11 +35,11 @@ findbar[hidden] {
 }
 
 findbar .findbar-container {
-  display: flex;
+  display: grid;
   flex: 1 1 0%;
-  flex-wrap: wrap;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
-  gap: 6px;
+  gap: 8px 4px;
   min-width: 0;
   height: auto !important;
   margin: 0 !important;
@@ -47,13 +48,20 @@ findbar .findbar-container {
 }
 
 findbar [anonid="findbar-textbox-wrapper"] {
+  grid-column: 1 / -1;
   display: flex;
+  margin-right: 32px;
+  gap: 4px;
   flex: 1 1 240px;
   min-width: 0;
   max-width: 100%;
 }
 
 findbar .findbar-textbox {
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 9px !important;
+  font-size: 13px;
   flex: 1 1 0%;
   width: 0;
   min-width: 0 !important;
@@ -68,8 +76,46 @@ findbar .findbar-textbox:not([status="notfound"], [flash="true"]) {
 }
 
 findbar :is(.findbar-find-previous, .findbar-find-next, .findbar-closebutton) {
+  box-sizing: border-box;
+  width: 28px;
+  height: 32px;
+  min-width: 28px;
+  margin: 0 !important;
+  padding: 6px !important;
   flex: 0 0 auto;
   border-radius: var(--zen-border-radius, 7px);
+}
+
+findbar .findbar-closebutton {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+findbar checkbox {
+  margin: 0 !important;
+  padding: 4px 2px !important;
+  font-size: 11px;
+  border-radius: 4px;
+}
+
+findbar checkbox:hover {
+  background: var(--toolbarbutton-hover-background, rgb(127 127 127 / 12%));
+}
+
+findbar :is(.findbar-label, .find-status-icon) {
+  grid-column: 1 / -1;
+  margin: 0 !important;
+}
+
+findbar {
+  container-type: inline-size;
+}
+
+@container (max-width: 420px) {
+  findbar .findbar-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 findbar :is(.findbar-find-status, .found-matches, checkbox) {

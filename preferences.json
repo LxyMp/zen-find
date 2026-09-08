@@ -31,7 +31,7 @@
     "property": "mod.zen-find.background-opacity",
     "label": "背景不透明度（0 完全透明，1 不透明）",
     "type": "string",
-    "defaultValue": "0.72"
+    "defaultValue": "0.96"
   },
   {
     "property": "uc.findbar.hide-buttons",
