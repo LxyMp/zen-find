@@ -23,21 +23,20 @@
   },
   {
     "property": "mod.zen-find.background-color",
-    "label": "查找栏背景颜色（CSS 颜色代码）",
+    "label": "背景颜色（留空跟随 Zen；颜色 Alpha 由不透明度覆盖）",
     "type": "string",
-    "defaultValue": "rgba(30, 30, 34, 0.72)"
+    "defaultValue": ""
   },
   {
     "property": "mod.zen-find.background-opacity",
-    "label": "查找栏背景透明度（0 到 1）",
+    "label": "背景不透明度（0 完全透明，1 不透明）",
     "type": "string",
     "defaultValue": "0.72"
   },
   {
     "property": "uc.findbar.hide-buttons",
-    "label": "隐藏查找栏原生操作按钮",
+    "label": "隐藏导航及查找选项按钮（保留关闭、输入框与计数）",
     "type": "checkbox",
     "defaultValue": false
   }
 ]
-

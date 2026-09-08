@@ -1,2 +1,116 @@
-@import url("src/findbar.css");
+/* Zen 1.22b: native per-tab findbar, without a fixed element ID. */
+findbar {
+  --zen-find-x: -50%;
+  --zen-find-y: 0%;
+  --zen-find-opacity: clamp(0, var(--mod-zen-find-background-opacity, 0.72), 1);
+  position: absolute !important;
+  inset: 12px auto auto 50% !important;
+  transform: translate(var(--zen-find-x), var(--zen-find-y)) !important;
+  z-index: 10 !important;
+  box-sizing: border-box;
+  width: min(680px, calc(100% - 24px));
+  min-width: 0 !important;
+  max-width: calc(100% - 24px);
+  max-height: calc(100% - 24px);
+  overflow: auto;
+  margin: 0 !important;
+  padding: 8px !important;
+  gap: 6px;
+  align-items: flex-start;
+  border: 1px solid var(--zen-colors-border, ThreeDShadow) !important;
+  border-radius: var(--zen-border-radius, 7px) !important;
+  color: var(--toolbar-field-text-color, CanvasText) !important;
+  /* Replace source alpha so opacity is controlled only by its setting. */
+  background: rgb(from var(--mod-zen-find-background-color, var(--zen-colors-secondary, Canvas)) r g b / var(--zen-find-opacity)) !important;
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  transition: none !important;
+}
 
+findbar[hidden] {
+  display: none !important;
+}
+
+findbar .findbar-container {
+  display: flex;
+  flex: 1 1 0%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+findbar [anonid="findbar-textbox-wrapper"] {
+  display: flex;
+  flex: 1 1 240px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+findbar .findbar-textbox {
+  flex: 1 1 0%;
+  width: 0;
+  min-width: 0 !important;
+  border-radius: var(--zen-border-radius, 7px);
+}
+
+/* Keep native notfound/flash colors and keyboard focus treatment. */
+findbar .findbar-textbox:not([status="notfound"], [flash="true"]) {
+  background-color: var(--zen-colors-input-bg, Field) !important;
+  color: var(--toolbar-field-text-color, FieldText) !important;
+  border-color: var(--zen-input-border-color, ThreeDShadow);
+}
+
+findbar :is(.findbar-find-previous, .findbar-find-next, .findbar-closebutton) {
+  flex: 0 0 auto;
+  border-radius: var(--zen-border-radius, 7px);
+}
+
+findbar :is(.findbar-find-status, .found-matches, checkbox) {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media -moz-pref("uc.findbar.horizontal-position", "left") {
+  findbar {
+    left: 12px !important;
+    --zen-find-x: 0%;
+  }
+}
+
+@media -moz-pref("uc.findbar.horizontal-position", "right") {
+  findbar {
+    left: auto !important;
+    right: 12px !important;
+    --zen-find-x: 0%;
+  }
+}
+
+@media -moz-pref("uc.findbar.vertical-position", "center") {
+  findbar {
+    top: 50% !important;
+    --zen-find-y: -50%;
+  }
+}
+
+@media -moz-pref("uc.findbar.vertical-position", "bottom") {
+  findbar {
+    top: auto !important;
+    bottom: 12px !important;
+  }
+}
+
+/* Explicit opt-in: keep close, input and result status available. */
+@media -moz-pref("uc.findbar.hide-buttons") {
+  findbar :is(.findbar-find-previous, .findbar-find-next,
+    .findbar-highlight, .findbar-case-sensitive,
+    .findbar-match-diacritics, .findbar-entire-word) {
+    display: none !important;
+  }
+}
