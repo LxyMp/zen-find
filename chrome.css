@@ -17,7 +17,7 @@ findbar {
   min-width: 0 !important;
   max-width: calc(100% - 24px);
   max-height: calc(100% - 24px);
-  overflow: auto;
+  overflow: visible;
   margin: 0 !important;
   padding: 10px !important;
   font-size: 12px;
@@ -26,13 +26,28 @@ findbar {
   border: 1px solid light-dark(rgb(255 255 255 / 80%), rgb(255 255 255 / 20%)) !important;
   border-radius: calc(var(--zen-border-radius, 7px) + 2px) !important;
   color: var(--toolbar-field-text-color, CanvasText) !important;
-  /* Replace source alpha so opacity is controlled only by its setting. */
-  background: rgb(from var(--mod-zen-find-background-color, var(--zen-find-glass-tint)) r g b / var(--zen-find-opacity)) !important;
-  backdrop-filter: blur(24px) saturate(115%) !important;
+  /* Keep the native control out of the background-filter rendering layer. */
+  background: transparent !important;
+  backdrop-filter: none !important;
   box-shadow: 0 6px 24px light-dark(rgb(0 0 0 / 12%), rgb(0 0 0 / 26%)),
     inset 0 1px 1px light-dark(rgb(255 255 255 / 90%), rgb(255 255 255 / 16%)),
     inset 0 -1px light-dark(rgb(0 0 0 / 4%), rgb(0 0 0 / 12%));
   transition: none !important;
+}
+
+/* A separate background layer samples behind the bar, not its controls.
+ * The positioned/transformed findbar already provides a stacking context;
+ * do not add isolation, opacity or filter to its foreground container.
+ */
+findbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgb(from var(--mod-zen-find-background-color, var(--zen-find-glass-tint)) r g b / var(--zen-find-opacity));
+  backdrop-filter: blur(24px) saturate(115%);
 }
 
 findbar[hidden] {

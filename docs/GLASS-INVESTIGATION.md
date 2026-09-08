@@ -25,4 +25,12 @@ Zen 1.22b，独立临时配置，Marionette，headless=False。网页为重复�
 
 ## 下一验证关口
 
+### 用户桌面截图后的更新
+
+用户提供的同窗截图已确认：网页 B 区真实模糊，查找栏背景仍能辨认文字。因此标准网页滤镜在用户环境中可用。
+
+进一步查看 Gecko 的 layout/painting/nsDisplayList.cpp，nsDisplayBackdropFilters::Paint 仍有 TODO: Implement backdrop filters，而 CreateWebRenderCommands 调用 PushBackdropFilter。这说明普通绘制与 WebRender 的滤镜路径不同，之前的浏览器导出截图不足以否定合成效果。
+
+本轮候选方案：将底色和 backdrop-filter 移至 findbar::before，原生 findbar 背景透明、滤镜为 none；伪元素位于前景控件后方，禁用指针事件。移除外层 overflow 裁剪以减少干扰。布局与伪元素计算样式可以自动验证，是否真正模糊网页仍需桌面截图验收。该方案是实验性修复，尚未确认根因或宣布成功。
+
 先在同一可捕获的桌面测试窗口中确认标准网页浮层确实模糊，然后对照原生 findbar。若标准浮层通过而 findbar 不通过，再检查跨文档合成边界；若两者都失败，先定位渲染设置或采集方式。该对照通过前，不再以换底色、加阴影或提高不透明度宣称毛玻璃修复。
