@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zen Find - Glass Comparison</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { color-scheme: light; }
+    body { margin: 0; background: #f4f5f7; color: #202328; font: 14px system-ui, sans-serif; }
+    .pattern {
+      position: relative;
+      height: 150px;
+      overflow: hidden;
+      background: repeating-linear-gradient(90deg, #ef737c 0 28px, #7ccbd5 28px 56px, #f6da80 56px 84px, #fff 84px 112px);
+    }
+    .texture {
+      margin: 0;
+      font: 700 28px/38px monospace;
+      white-space: nowrap;
+      color: #172027;
+      user-select: none;
+    }
+    .texture span { display: block; }
+    header { padding: 14px 20px; border-bottom: 1px solid #d3d7dd; }
+    h1 { margin: 0 0 4px; font-size: 19px; }
+    header p { margin: 0; color: #59616b; }
+    section { margin: 0; }
+    h2 { margin: 0; padding: 10px 20px; font-size: 14px; font-weight: 600; }
+    .glass {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(560px, calc(100% - 24px));
+      height: 96px;
+      border: 1px solid rgb(255 255 255 / 80%);
+      border-radius: 8px;
+      background: rgb(255 255 255 / 40%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .blur { backdrop-filter: blur(24px) saturate(115%); }
+    .badge { background: #fff; color: #202328; padding: 6px 12px; border-radius: 4px; font-weight: 600; }
+    footer { padding: 12px 20px; color: #59616b; }
+    .unsupported { display: none; color: #b3261e; }
+    @supports not (backdrop-filter: blur(24px)) { .unsupported { display: inline; } }
+  </style>
+</head>
+<body>
+  <div class="pattern" aria-label="原生查找栏背景区域">
+    <p class="texture" aria-hidden="true">
+      <span>ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND</span>
+      <span>BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789</span>
+      <span>ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND</span>
+      <span>BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789</span>
+    </p>
+  </div>
+  <header>
+    <h1>Zen Find · 网页背景模糊对照</h1>
+    <p>顶部：原生查找栏区域 · A/B：相同背景、相同 40% 不透明度</p>
+  </header>
+  <section aria-labelledby="control-title">
+    <h2 id="control-title">A · 无模糊对照</h2>
+    <div class="pattern">
+      <p class="texture" aria-hidden="true">
+        <span>ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND</span>
+        <span>BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789</span>
+        <span>ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND</span>
+        <span>BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789</span>
+      </p>
+      <div class="glass"><span class="badge">A · blur: 0</span></div>
+    </div>
+  </section>
+  <section aria-labelledby="blur-title">
+    <h2 id="blur-title">B · 标准网页背景模糊</h2>
+    <div class="pattern">
+      <p class="texture" aria-hidden="true">
+        <span>ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND</span>
+        <span>BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789</span>
+        <span>ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND</span>
+        <span>BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789 BACKGROUND ZEN 0123456789</span>
+      </p>
+      <div class="glass blur"><span class="badge">B · blur: 24px</span></div>
+    </div>
+  </section>
+  <footer>Zen 1.22b · CSS-only · 24px blur / 115% saturation <strong class="unsupported">浏览器不支持此滤镜语法</strong></footer>
+</body>
+</html>
