@@ -2,6 +2,8 @@
 findbar {
   --zen-find-x: -50%;
   --zen-find-y: 0%;
+  --zen-find-count-width: min(140px, 40cqw);
+  --zen-find-count-right: 114px;
   --zen-find-opacity: clamp(0, var(--mod-zen-find-background-opacity, 0.96), 1);
   position: absolute !important;
   /* Native grid-area: findbar is a collapsed bottom row when out of flow. */
@@ -21,7 +23,7 @@ findbar {
   gap: 6px;
   align-items: flex-start;
   border: 1px solid var(--zen-colors-border, ThreeDShadow) !important;
-  border-radius: var(--zen-border-radius, 7px) !important;
+  border-radius: calc(var(--zen-border-radius, 7px) + 2px) !important;
   color: var(--toolbar-field-text-color, CanvasText) !important;
   /* Replace source alpha so opacity is controlled only by its setting. */
   background: rgb(from var(--mod-zen-find-background-color, var(--zen-colors-secondary, Canvas)) r g b / var(--zen-find-opacity)) !important;
@@ -37,9 +39,9 @@ findbar[hidden] {
 findbar .findbar-container {
   display: grid;
   flex: 1 1 0%;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, max-content) minmax(0, 1fr);
   align-items: center;
-  gap: 8px 4px;
+  gap: 6px 12px;
   min-width: 0;
   height: auto !important;
   margin: 0 !important;
@@ -66,6 +68,38 @@ findbar .findbar-textbox {
   width: 0;
   min-width: 0 !important;
   border-radius: var(--zen-border-radius, 7px);
+}
+
+/* Reserve input space only while the native count is visible. */
+findbar:has(.found-matches:not([hidden])) .findbar-textbox {
+  padding-right: calc(var(--zen-find-count-width) + 16px) !important;
+}
+
+findbar .found-matches:not([hidden]) {
+  position: absolute;
+  top: 10px;
+  right: var(--zen-find-count-right);
+  width: var(--zen-find-count-width);
+  height: 32px;
+  line-height: 32px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+findbar .findbar-textbox:focus {
+  outline-width: 1px !important;
+  outline-offset: 0 !important;
+}
+
+findbar .findbar-find-status:empty,
+findbar .find-status-icon:not([status]) {
+  display: none;
 }
 
 /* Keep native notfound/flash colors and keyboard focus treatment. */
@@ -156,6 +190,9 @@ findbar :is(.findbar-find-status, .found-matches, checkbox) {
 
 /* Explicit opt-in: keep close, input and result status available. */
 @media -moz-pref("uc.findbar.hide-buttons") {
+  findbar {
+    --zen-find-count-right: 50px;
+  }
   findbar :is(.findbar-find-previous, .findbar-find-next,
     .findbar-highlight, .findbar-case-sensitive,
     .findbar-match-diacritics, .findbar-entire-word) {
