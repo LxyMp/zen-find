@@ -28,6 +28,14 @@ python3 tools/install_local.py "/完整路径/Zen配置文件夹"
 
 `chrome.css` 是自包含入口，不使用 `@import`。`theme.json` 中的相对路径仅供本地安装脚本解析，不能直接作为商店下载元数据。发布时须为 `style`、`preferences`、`readme` 填写真实 HTTPS URL，并按商店要求补齐元数据；当前尚未发布。
 
+## 正式发布准备
+
+源码仓库：<https://github.com/LxyMp/zen-find>。当前发布版本为 `0.0.1`。
+
+Zen Theme Store 的新 Mod 发布流程是：在[主题商店的创建主题 issue 模板](https://github.com/zen-browser/theme-store/issues/new?assignees=&labels=new-theme&projects=&template=create-theme.yml&title=%5Bcreate-theme%5D%3A+)中提交名称、描述、主页、PNG 预览图、CSS、README 和 `preferences.json`。维护者的机器人会根据 issue 创建主题目录和后续 PR；不需要直接修改主题商店仓库。
+
+提交前还需完成 Zen 1.22b 实机验收，并确认接受主题商店采用的 CC BY-NC-SA 4.0 授权。当前尚缺最终纯色界面预览图，尚未提交商店 issue。`tools/install_local.py` 和 `tools/probe_glass.py` 仅用于本地开发，不作为商店主题文件提交。
+
 ## 验证状态
 
 已核对本机 Zen 1.22b 包内原生结构、主题变量和 Mod 加载器。安装工具已在临时配置夹验证。完整桌面交互和主题切换仍需实机验收，详见 `docs/VERIFICATION.md`。早期毛玻璃实验已停止，历史记录保留在 `docs/GLASS-INVESTIGATION.md`。
