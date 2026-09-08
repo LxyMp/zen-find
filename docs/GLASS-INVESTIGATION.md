@@ -2,6 +2,40 @@
 
 目标：仅模糊查找栏覆盖的网页区域，保持原生输入、计数与按钮清晰。透明度加深、模糊整页和模糊桌面均不算通过。
 
+## 当前结论（2026-09-08）
+
+真实网页背景模糊验收未通过。用户安装后的桌面截图已否定 `45b6399` 的伪元素方案；下面的旧实验记录保留为历史，不代表该方案有效。
+
+本次在 Zen 1.22b / Gecko 155.0.1、BuildID 20260904060728 的独立配置完成桌面对照。为区分同时运行的 Zen 实例，使用本机应用的临时副本，单独设置应用标识并对副本本地签名；浏览器资源和可执行文件来自本机安装版本。截图逐一核对输入框中的 `DIAG-*` 标记，未使用浏览器导出截图判定模糊。独立配置没有安装 Transparent Zen。
+
+| 桌面对照 | 结果 |
+| --- | --- |
+| 发布 CSS 的伪元素覆盖远程网页条纹 | 透明，文字及条纹边缘清晰 |
+| 相同查找栏覆盖 chrome 文档内的临时条纹节点 | 背景真实模糊，原生控件清晰 |
+| 滤镜改为直接作用于 findbar，同时移除 transform、container-type、contain | 网页仍不模糊；同文档条纹可模糊 |
+| 仅在临时实验中给远程 browser 分别设置 opacity: 0.999、filter: brightness(1) | 网页仍不模糊 |
+| 独立配置启动前设 gfx.webrender.compositor=false | wrCompositor 报告 FEATURE_FAILURE_PREF_OFF；上述网页失败、同文档成功的结果不变 |
+| 网页 B 区的标准 backdrop-filter | 各组截图均有真实模糊 |
+
+![查找栏覆盖网页背景：未模糊](images/glass-remote-page.jpg)
+
+![相同查找栏覆盖浏览器 UI 文档背景：已模糊](images/glass-chrome-background.jpg)
+
+祖先样式检查：无非 none 的 mask-image、clip-path 或祖先 backdrop-filter，无小于 1 的祖先 opacity；根 body 有 contain: paint，部分容器有 overflow: clip。默认 backdrop-filter.enabled=true，force-enabled=false；远程网页的 isRemoteBrowser=true。这些属性记录本身不能证明根因。
+
+证据将问题缩小到远程网页与 chrome 背景采样的差异，排除了“滤镜在 findbar 上完全不能工作”的解释。尚未定位到 Zen/Gecko 的具体代码分支，也不能证明所有纯 CSS 路径均不可能。下一步需对照目标版本的远程网页显示列表及 WebRender 背景读取路径，而不是继续调整模糊半径或底色。关闭原生合成器的实验无效，不建议用户修改此偏好。
+
+## 可复现实验
+
+`tools/probe_glass.py` 仅供开发，在临时配置中注入诊断样式和同文档背景节点，不进入 Mod 发布或本地安装文件。不会连接用户现有配置。依赖 `marionette-driver`，可安装在独立 Python 虚拟环境中。
+
+```sh
+python tools/probe_glass.py
+python tools/probe_glass.py --disable-native-compositor
+```
+
+可用 `--binary` 指定测试用 Zen 可执行文件，`--port` 修改默认端口 2833。Gecko 日志写入系统临时目录的 `zen-find-glass.log`。脚本输出版本、图形状态和祖先样式，按回车依次显示 `DIAG-PAGE`、`DIAG-CHROME`、`DIAG-DIRECT`，最后关闭临时浏览器。每阶段都必须核对桌面截图中的标记，截图工具选错实例时不得采用结果。同文档条纹仅用来诊断，不是网页背景替代方案。
+
 ## 本轮环境与结果
 
 Zen 1.22b，独立临时配置，Marionette，headless=False。网页为重复大字号文字，测试面板不透明度设为 0.4，以便辨别背景是否发生模糊。
