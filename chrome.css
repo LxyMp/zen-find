@@ -4,6 +4,7 @@ findbar {
   --zen-find-y: 0%;
   --zen-find-count-width: min(140px, 40cqw);
   --zen-find-count-right: 114px;
+  --zen-find-glass-tint: color-mix(in srgb, var(--zen-colors-tertiary, Canvas) 88%, var(--zen-colors-secondary, Canvas));
   --zen-find-opacity: clamp(0, var(--mod-zen-find-background-opacity, 0.96), 1);
   position: absolute !important;
   /* Native grid-area: findbar is a collapsed bottom row when out of flow. */
@@ -22,13 +23,15 @@ findbar {
   font-size: 12px;
   gap: 6px;
   align-items: flex-start;
-  border: 1px solid var(--zen-colors-border, ThreeDShadow) !important;
+  border: 1px solid light-dark(rgb(255 255 255 / 80%), rgb(255 255 255 / 20%)) !important;
   border-radius: calc(var(--zen-border-radius, 7px) + 2px) !important;
   color: var(--toolbar-field-text-color, CanvasText) !important;
   /* Replace source alpha so opacity is controlled only by its setting. */
-  background: rgb(from var(--mod-zen-find-background-color, var(--zen-colors-secondary, Canvas)) r g b / var(--zen-find-opacity)) !important;
-  backdrop-filter: blur(18px) saturate(140%);
-  box-shadow: 0 4px 16px rgb(0 0 0 / 12%), inset 0 1px rgb(255 255 255 / 18%);
+  background: rgb(from var(--mod-zen-find-background-color, var(--zen-find-glass-tint)) r g b / var(--zen-find-opacity)) !important;
+  backdrop-filter: blur(24px) saturate(115%) !important;
+  box-shadow: 0 6px 24px light-dark(rgb(0 0 0 / 12%), rgb(0 0 0 / 26%)),
+    inset 0 1px 1px light-dark(rgb(255 255 255 / 90%), rgb(255 255 255 / 16%)),
+    inset 0 -1px light-dark(rgb(0 0 0 / 4%), rgb(0 0 0 / 12%));
   transition: none !important;
 }
 
