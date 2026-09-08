@@ -2,6 +2,8 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import subprocess
+import sys
 from pathlib import Path
 
 spec = importlib.util.spec_from_file_location("installer", Path(__file__).with_name("install_local.py"))
@@ -10,6 +12,26 @@ spec.loader.exec_module(installer)
 
 
 class InstallerTests(unittest.TestCase):
+    def test_actual_lock_blocks_install(self):
+        with tempfile.TemporaryDirectory() as directory:
+            profile = Path(directory)
+            (profile / "prefs.js").touch()
+            code = "import fcntl,sys; f=open(sys.argv[1],'a+b'); fcntl.lockf(f,fcntl.LOCK_EX); print('ready',flush=True); sys.stdin.read()"
+            process = subprocess.Popen(
+                [sys.executable, "-c", code, str(profile / ".parentlock")],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+            try:
+                self.assertEqual(process.stdout.readline().strip(), "ready")
+                with self.assertRaises(ValueError):
+                    installer.install(profile)
+                self.assertFalse((profile / "zen-themes.json").exists())
+            finally:
+                process.communicate(timeout=5)
+            # The file remains after exit, but its kernel lock has been released.
+            self.assertTrue((profile / ".parentlock").exists())
+            installer.install(profile)
+            self.assertTrue((profile / "zen-themes.json").exists())
+
     def test_preserves_other_mod_and_reinstall(self):
         with tempfile.TemporaryDirectory() as directory:
             profile = Path(directory)

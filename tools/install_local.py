@@ -2,6 +2,8 @@
 import argparse
 import json
 import shutil
+import sys
+import fcntl
 from datetime import datetime
 from pathlib import Path
 
@@ -13,8 +15,26 @@ def install(profile):
     if not (profile / "prefs.js").is_file():
         raise ValueError("请选择包含 prefs.js 的 Zen 配置目录")
     if any((profile / name).exists() or (profile / name).is_symlink()
-           for name in ("parent.lock", ".parentlock", "lock")):
+           for name in ("parent.lock", "lock")):
         raise ValueError("配置目录存在锁文件；请退出使用此目录的 Zen 后重试")
+    if sys.platform != "darwin":
+        raise ValueError("本地安装工具目前仅验证支持 macOS")
+    lock = profile / ".parentlock"
+    if lock.is_symlink():
+        raise ValueError("无法安全验证符号链接锁文件")
+    # Firefox on macOS uses a whole-file POSIX record lock, not file existence.
+    with lock.open("a+b") as handle:
+        try:
+            fcntl.lockf(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise ValueError("Zen 正在占用此配置；请完全退出后重试") from error
+        try:
+            _install_locked(profile)
+        finally:
+            fcntl.lockf(handle, fcntl.LOCK_UN)
+
+
+def _install_locked(profile):
     registry = profile / "zen-themes.json"
     mods = json.loads(registry.read_text()) if registry.exists() else {}
     if not isinstance(mods, dict):
