@@ -4,6 +4,8 @@ findbar {
   --zen-find-y: 0%;
   --zen-find-opacity: clamp(0, var(--mod-zen-find-background-opacity, 0.72), 1);
   position: absolute !important;
+  /* Native grid-area: findbar is a collapsed bottom row when out of flow. */
+  grid-area: browserstack !important;
   inset: 12px auto auto 50% !important;
   transform: translate(var(--zen-find-x), var(--zen-find-y)) !important;
   z-index: 10 !important;
