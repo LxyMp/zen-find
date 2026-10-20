@@ -23,7 +23,7 @@
   },
   {
     "property": "mod.zen-find.background-color",
-    "label": "背景颜色（留空跟随 Zen）",
+    "label": "背景颜色（留空跟随 Zen；请用不透明颜色，勿用 transparent）",
     "type": "string",
     "defaultValue": ""
   },

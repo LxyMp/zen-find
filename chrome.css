@@ -1,4 +1,4 @@
-/* Zen 1.22b: native per-tab findbar, without a fixed element ID. */
+/* Zen 1.22b baseline (per-tab native findbar, no fixed ID); 1.23.3b re-verification pending. */
 findbar {
   --zen-find-x: -50%;
   --zen-find-y: 0%;
@@ -91,18 +91,13 @@ findbar .found-matches:not([hidden]) {
   pointer-events: none;
 }
 
-findbar .findbar-textbox:focus {
-  outline-width: 1px !important;
-  outline-offset: 0 !important;
-}
-
 findbar .findbar-find-status:empty,
 findbar .find-status-icon:not([status]) {
   display: none;
 }
 
 /* Keep native notfound/flash colors and keyboard focus treatment. */
-findbar .findbar-textbox:not([status="notfound"], [flash="true"]) {
+findbar .findbar-textbox:not([status="notfound"], [flash="true"], :focus) {
   background-color: var(--zen-colors-input-bg, Field) !important;
   color: var(--toolbar-field-text-color, FieldText) !important;
   border-color: var(--zen-input-border-color, ThreeDShadow);
@@ -136,7 +131,8 @@ findbar checkbox {
 }
 
 findbar checkbox:hover {
-  background: var(--toolbarbutton-hover-background, rgb(127 127 127 / 12%));
+  background: var(--toolbarbutton-background-color-hover,
+    var(--zen-colors-hover-bg, rgb(127 127 127 / 12%)));
 }
 
 findbar :is(.findbar-label, .find-status-icon) {
@@ -151,6 +147,41 @@ findbar {
 @container (max-width: 420px) {
   findbar .findbar-container {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Keep the count off the input row on narrow panels. */
+  findbar:has(.found-matches:not([hidden])) .found-matches {
+    position: static;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: auto;
+    height: auto;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  findbar:has(.found-matches:not([hidden])) .findbar-textbox {
+    padding-right: 9px !important;
+  }
+
+  findbar:has(.found-matches:not([hidden])) checkbox:nth-of-type(1) {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  findbar:has(.found-matches:not([hidden])) checkbox:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  findbar:has(.found-matches:not([hidden])) checkbox:nth-of-type(3) {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  findbar:has(.found-matches:not([hidden])) checkbox:nth-of-type(4) {
+    grid-column: 2;
+    grid-row: 4;
   }
 }
 
