@@ -27,16 +27,10 @@
 
 证据将问题缩小到远程网页与 chrome 背景采样的差异，排除了“滤镜在 findbar 上完全不能工作”的解释。尚未定位到 Zen/Gecko 的具体代码分支，也不能证明所有纯 CSS 路径均不可能。下一步需对照目标版本的远程网页显示列表及 WebRender 背景读取路径，而不是继续调整模糊半径或底色。关闭原生合成器的实验无效，不建议用户修改此偏好。
 
-## 可复现实验
+## 可复现实验（已移除）
 
-`tools/probe_glass.py` 仅供开发，在临时配置中注入诊断样式和同文档背景节点，不进入 Mod 发布或本地安装文件。不会连接用户现有配置。依赖 `marionette-driver`，可安装在独立 Python 虚拟环境中。
-
-```sh
-python tools/probe_glass.py
-python tools/probe_glass.py --disable-native-compositor
-```
-
-可用 `--binary` 指定测试用 Zen 可执行文件，`--port` 修改默认端口 2833。Gecko 日志写入系统临时目录的 `zen-find-glass.log`。脚本输出版本、图形状态和祖先样式，按回车依次显示 `DIAG-PAGE`、`DIAG-CHROME`、`DIAG-DIRECT`，最后关闭临时浏览器。每阶段都必须核对桌面截图中的标记，截图工具选错实例时不得采用结果。同文档条纹仅用来诊断，不是网页背景替代方案。
+`tools/probe_glass.py` 和 `tests/glass-comparison.html` 已在 2026-10-20 的测试残留清理中删除。
+本文件只保留历史记录，不再提供复现命令。
 
 ## 本轮环境与结果
 

@@ -17,7 +17,6 @@
 - `chrome.css`：发布给 Zen Mod 的 CSS 入口。
 - `chrome.css` 同时作为源文件和发布文件，不使用相对导入；Zen 会拼接所有 Mod 的 CSS。
 - `tools/install_local.py`：浏览器外运行的本地开发安装工具，不属于浏览器注入脚本。
-- `tools/probe_glass.py`：仅在临时配置运行的开发诊断脚本，不属于 Mod 发布内容；用于对照网页背景与 chrome 文档背景的模糊效果。
 - `PLAN.md`：经审核的实施计划和验收标准。
 
 ## 实现规则
