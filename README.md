@@ -34,7 +34,7 @@ python3 tools/install_local.py "/完整路径/Zen配置文件夹"
 
 Zen Theme Store 的新 Mod 发布流程是：在[主题商店的创建主题 issue 模板](https://github.com/zen-browser/theme-store/issues/new?assignees=&labels=new-theme&projects=&template=create-theme.yml&title=%5Bcreate-theme%5D%3A+)中提交名称、描述、主页、PNG 预览图、CSS、README 和 `preferences.json`。维护者的机器人会根据 issue 创建主题目录和后续 PR；不需要直接修改主题商店仓库。
 
-提交前还需在当前 Zen 1.23.3b 上完成实机验收（1.22b 记录见 `docs/VERIFICATION.md`），并确认接受主题商店采用的 CC BY-NC-SA 4.0 授权。当前尚缺最终纯色界面预览图，尚未提交商店 issue。`tools/install_local.py` 和 `tools/probe_glass.py` 仅用于本地开发，不作为商店主题文件提交。
+提交前还需在当前 Zen 1.23.3b 上完成实机验收（1.22b 记录见 `docs/VERIFICATION.md`），并确认接受主题商店采用的 CC BY-NC-SA 4.0 授权。已准备当前版本的 PNG 预览图 `docs/images/store-preview.png`，尚未提交商店 issue；完整验收完成前不建议正式提交。`tools/install_local.py` 和 `tools/probe_glass.py` 仅用于本地开发，不作为商店主题文件提交。
 
 ## 验证状态
 

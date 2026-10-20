@@ -5,6 +5,7 @@
   "style": "chrome.css",
   "readme": "README.md",
   "preferences": "preferences.json",
+  "homepage": "https://github.com/LxyMp/zen-find",
   "author": "LxyMp",
   "version": "0.0.1",
   "tags": ["interface", "toolbar"]
