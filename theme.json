@@ -1,11 +1,11 @@
 {
   "id": "7d7d01bd-1788-4e0a-a0c9-4aa463a9d9fb",
   "name": "Zen Find",
-  "description": "A CSS redesign for Zen Browser's native find bar.",
+  "description": "Flat, customizable redesign of Zen's native find bar with position and visibility controls.",
   "style": "chrome.css",
   "readme": "README.md",
   "preferences": "preferences.json",
-  "author": "bigxin",
+  "author": "LxyMp",
   "version": "0.0.1",
   "tags": ["interface", "toolbar"]
 }

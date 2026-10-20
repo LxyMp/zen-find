@@ -37,7 +37,6 @@ def main():
             const bar = await gBrowser.getFindBar();
             bar.open();
             bar._findField.value = 'DIAG-PAGE';
-            bar.style.setProperty('--mod-zen-find-background-opacity', '.4');
             bar.style.setProperty('--mod-zen-find-background-color', '#ffffff');
             const properties = ['display', 'position', 'z-index', 'opacity',
               'filter', 'backdrop-filter', 'clip-path', 'mask-image', 'isolation',
