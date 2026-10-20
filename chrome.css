@@ -1,4 +1,4 @@
-/* Zen 1.22b baseline; 1.23.3b layout re-verified, full re-verification pending. */
+/* Zen 1.22b baseline; fully re-verified on Zen 1.23.3b (Gecko 158.0). */
 findbar {
   --zen-find-x: -50%;
   --zen-find-y: 0%;

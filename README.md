@@ -1,6 +1,6 @@
 # Zen Find
 
-为 **Zen 1.22b（Gecko 155.0.1）** 重设计原生查找栏的纯 CSS Mod。项目验证基线为 1.22b；**Zen 1.23.3b（Gecko 158.0）** 已完成布局与九位置临时复测，完整交互/主题复测仍待完成，详见 `docs/VERIFICATION.md`。
+为 **Zen 1.23.3b（Gecko 158.0）** 重设计原生查找栏的纯 CSS Mod；**Zen 1.22b（Gecko 155.0.1）** 为历史基线。1.23.3b 已完成交互、布局、窗口、主题和禁用恢复的临时 profile 实机验收；1.22b 本轮未复测，详见 `docs/VERIFICATION.md`。
 
 默认显示在当前网页区域上方居中，支持九种位置组合。界面采用扁平化纯色背景和外部边缘阴影；背景留空时跟随 Zen 主题，也可在 Mod 设置中输入 CSS 颜色代码。背景始终按不透明颜色渲染，颜色中的 Alpha 值不会让网页透出。请使用不透明颜色；`transparent` 会被强制渲染为黑色，非法颜色会让背景失效。
 
@@ -8,7 +8,7 @@
 
 ## 本地开发安装
 
-本项目以 Zen 1.22b 为验证基线；该版本没有此前声称的“从本地目录安装”入口。本仓库提供离线开发安装工具，需要 Python 3。
+本项目以 Zen 1.23.3b 为当前验证目标；Zen 没有通用的“从本地目录安装”入口。本仓库提供离线开发安装工具，需要 Python 3。
 
 1. 在 Zen 打开 `about:support`，找到“配置文件夹”，记录其完整路径。
 2. 完全退出 Zen。建议先用 `about:profiles` 创建独立测试配置。
@@ -34,8 +34,8 @@ python3 tools/install_local.py "/完整路径/Zen配置文件夹"
 
 Zen Theme Store 的新 Mod 发布流程是：在[主题商店的创建主题 issue 模板](https://github.com/zen-browser/theme-store/issues/new?assignees=&labels=new-theme&projects=&template=create-theme.yml&title=%5Bcreate-theme%5D%3A+)中提交名称、描述、主页、PNG 预览图、CSS、README 和 `preferences.json`。维护者的机器人会根据 issue 创建主题目录和后续 PR；不需要直接修改主题商店仓库。
 
-提交前还需在当前 Zen 1.23.3b 上完成实机验收（1.22b 记录见 `docs/VERIFICATION.md`），并确认接受主题商店采用的 CC BY-NC-SA 4.0 授权。已准备当前版本的 PNG 预览图 `docs/images/store-preview.png`，尚未提交商店 issue；完整验收完成前不建议正式提交。`tools/install_local.py` 和 `tools/probe_glass.py` 仅用于本地开发，不作为商店主题文件提交。
+1.23.3b 实机验收已完成（1.22b 历史记录见 `docs/VERIFICATION.md`）；提交前只剩确认接受主题商店采用的 CC BY-NC-SA 4.0 授权。已准备当前版本的 PNG 预览图 `docs/images/store-preview.png`，尚未提交商店 issue。`tools/install_local.py` 和 `tools/probe_glass.py` 仅用于本地开发，不作为商店主题文件提交。
 
 ## 验证状态
 
-已核对 Zen 1.22b 安装包内原生结构、主题变量和 Mod 加载器；另已静态核对 1.23.3b 的 findbar 结构与 Mod 加载器。安装工具已完成临时配置验证。1.23.3b 的布局、九位置、隐藏开关和焦点样式已在临时 profile 复测；完整桌面交互、窗口尺寸/分屏和主题切换仍需实机验收，详见 `docs/VERIFICATION.md`。早期毛玻璃实验已停止，历史记录保留在 `docs/GLASS-INVESTIGATION.md`。
+已核对 Zen 1.22b 安装包内原生结构、主题变量和 Mod 加载器，并静态核对 1.23.3b 的 findbar 结构与 Mod 加载器。安装工具已完成临时配置验证。1.23.3b 已在临时 profile 验收：输入、Enter/Shift+Enter、Esc、无匹配、四个原生选项、九位置、窄面板、侧栏、紧凑、分屏、深浅主题、自定义背景和禁用恢复。仍缺 1.22b 回归、真实 Cmd/Ctrl+F 键盘路径和深色系统自动主题；详见 `docs/VERIFICATION.md`。早期毛玻璃实验已停止，历史记录保留在 `docs/GLASS-INVESTIGATION.md`。
