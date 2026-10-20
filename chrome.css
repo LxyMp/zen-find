@@ -1,4 +1,4 @@
-/* Zen 1.22b baseline (per-tab native findbar, no fixed ID); 1.23.3b re-verification pending. */
+/* Zen 1.22b baseline; 1.23.3b layout re-verified, full re-verification pending. */
 findbar {
   --zen-find-x: -50%;
   --zen-find-y: 0%;

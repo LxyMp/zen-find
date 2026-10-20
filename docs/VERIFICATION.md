@@ -2,7 +2,7 @@
 
 当前视觉方向（2026-09-08）：采用不透明纯色背景、扁平边框和外部边缘阴影。毛玻璃已移出验收范围；此前跨文档模糊实验保留在 `GLASS-INVESTIGATION.md`。
 
-> 2026-10-20 状态：本机 Zen 已更新为 **1.23.3b（Gecko 158.0，BuildID 20261016101044）**。以下 1.22b 记录保留为历史基线；1.23.3b 的实机复测尚未完成。
+> 2026-10-20 状态：本机 Zen 已更新为 **1.23.3b（Gecko 158.0，BuildID 20261016101044）**。以下 1.22b 记录保留为历史基线；1.23.3b 已完成布局/九位置临时复测，完整实机验收尚未完成。
 
 ## 依据
 
@@ -42,7 +42,7 @@
 
 以下项目在 1.23.3b 上尚未宣称通过，不能用源码检查替代：
 
-- 九个位置组合及从未设置横向偏好时的垂直居中。
+- 九个位置组合及从未设置横向偏好时的垂直居中（布局已复测，交互待验收）。
 - 浅色、深色和自动主题；默认背景、自定义背景及带 Alpha 的颜色输入均应显示为不透明纯色。
 - 320/520/1280 像素窗口、侧栏展开/收起、紧凑模式和分屏。
 - Cmd/Ctrl+F、Esc、Enter、Shift+Enter、无匹配与计数。
@@ -50,9 +50,20 @@
 
 非法颜色需在设置中改回有效值；`transparent` 会被相对色语法渲染为黑色，请使用不透明颜色。
 
+## 1.23.3b 布局复测（2026-10-20）
+
+在临时 profile（GUI，Zen 1.23.3b，Gecko 158.0，BuildID 20261016101044）通过 Marionette 加载当前 chrome.css 后测得：
+
+- findbar 父节点为 `box.browserContainer`，`grid-area: browserstack` 计算值生效；560px 宽时 x=695、y=20、w=560、h=86。
+- 九种位置均落在 browserContainer（x=230、y=8、w=1490、h=1068）内；left/right/center 与 top/center/bottom 的 x/y 符合 12px 边距与居中公式。
+- 计数 2/10 可见时：宽面板输入框 442px、计数 140px、预留 156px；窄面板 300px（内联宽度）时计数改为静态第 2 行（278px 宽），输入框 182px、padding-right 9px，选项 2x2 排列。
+- 隐藏开关：宽面板高 54px、窄面板高 75px，导航和四个选项均 display:none。
+- 焦点：2px solid outline、offset -2px；`--toolbarbutton-background-color-hover` 已解析为 Zen 的 color-mix 值。
+- 上述截图来自临时 profile，仅用于本地验证，不作为商店预览图。
+
 ## 1.23.3b 待复测重点
 
-- 确认 findbar 实际父节点与 `grid-area: browserstack` 是否仍生效：1.23.3b 源码中 `#createFindBar` 将 findbar 插到 `browser.parentNode` 之后，而 browser 位于 `.browserStack` 内；原生布局 CSS 仍写 `.browserContainer > findbar`。
-- 复测窄面板（≤420px）计数独占一行后的输入宽度、选项两列和隐藏开关。
-- 复测原生焦点环、悬停色、非法/`transparent` 背景和开合动画。
-- 九种位置、深浅/自动主题、320/520/1280、侧栏、紧凑、分屏、快捷键、禁用恢复。
+- 实际查找输入、Enter/Shift+Enter、Esc、无匹配、计数更新和全部选项。
+- 浅色/深色/自动主题、自定义/非法/`transparent` 背景。
+- 320/520/1280 窗口、侧栏展开收起、紧凑模式、分屏、禁用 Mod 恢复。
+- 在 1.22b 上回归确认以上布局改动。
