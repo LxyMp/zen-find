@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zen Find 动画示意</title>
+<style>
+  :root {
+    --chrome-h: 56px;
+    --bar-w: 560px;
+    --in-duration: 180ms;
+    --out-duration: 140ms;
+    --ease-in: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-out: cubic-bezier(0.4, 0, 1, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", sans-serif;
+    color: #15141a;
+    background: #e9eaee;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  .chrome {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: var(--chrome-h);
+    padding: 0 18px;
+    background: #f7f7f9;
+    border-bottom: 1px solid #d7d8dd;
+    user-select: none;
+  }
+
+  .dots {
+    display: flex;
+    gap: 7px;
+    flex: 0 0 auto;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #d8d8dc;
+  }
+
+  .address {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+    max-width: 520px;
+    height: 30px;
+    padding: 0 12px;
+    color: #6b6a72;
+    font-size: 12px;
+    background: #fff;
+    border: 1px solid #dedee3;
+    border-radius: 7px;
+  }
+
+  .address svg {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    opacity: 0.6;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+
+  .action {
+    height: 30px;
+    padding: 0 12px;
+    color: #3f3e46;
+    font-size: 12px;
+    background: #fff;
+    border: 1px solid #d9d9df;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .action:hover {
+    background: #f0f0f3;
+  }
+
+  .action.primary {
+    color: #fff;
+    background: #2f6fed;
+    border-color: #2f6fed;
+  }
+
+  .action.primary:hover {
+    background: #245fd4;
+  }
+
+  .status {
+    min-width: 74px;
+    color: #77767e;
+    font-size: 12px;
+    text-align: right;
+  }
+
+  .viewport {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .page {
+    max-width: 980px;
+    padding: calc(var(--chrome-h) + 62px) 9vw 62px;
+  }
+
+  .page h1 {
+    margin: 0 0 18px;
+    font-size: 34px;
+    letter-spacing: -0.02em;
+  }
+
+  .page p {
+    max-width: 680px;
+    margin: 10px 0;
+    color: #5e5d66;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .page .accent {
+    color: #2f6fed;
+    font-weight: 600;
+  }
+
+  .guide {
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    height: 0;
+    border-top: 1px dashed rgb(47 111 237 / 35%);
+    pointer-events: none;
+  }
+
+  .guide span {
+    position: absolute;
+    left: 18px;
+    top: 7px;
+    padding: 2px 7px;
+    color: #2f6fed;
+    font-size: 11px;
+    background: rgb(255 255 255 / 88%);
+    border-radius: 4px;
+  }
+
+  .guide.top {
+    top: 0;
+    border-top-color: rgb(47 111 237 / 24%);
+  }
+
+  .guide.top span {
+    top: 7px;
+    color: #797982;
+  }
+
+  .guide.position span {
+    top: 8px;
+  }
+
+  .guide.visible {
+    top: var(--chrome-h);
+    border-top-color: rgb(47 111 237 / 24%);
+  }
+
+  .guide.visible span {
+    top: 8px;
+    color: #797982;
+  }
+
+  .findbar {
+    /* JS sets --rest-top to the selected pixel distance from the content top. */
+    --rest-top: 150px;
+    --visible-top: var(--chrome-h);
+    --entry-y: calc(min(var(--visible-top), var(--rest-top)) - var(--rest-top));
+
+    position: absolute;
+    top: var(--rest-top);
+    left: 50%;
+    z-index: 4;
+
+    width: min(var(--bar-w), calc(100% - 24px));
+    padding: 10px;
+
+    background: #fbfaff;
+    border: 1px solid #c9c9d0;
+    border-radius: 8px;
+    box-shadow:
+      0 1px 3px rgb(0 0 0 / 18%),
+      0 8px 24px rgb(0 0 0 / 14%);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(-50%, var(--entry-y), 0) scale(0.9);
+    transform-origin: 50% 50%;
+    will-change: transform, opacity;
+
+    transition:
+      transform var(--out-duration) var(--ease-out),
+      opacity var(--out-duration) var(--ease-out),
+      visibility 0s linear var(--out-duration);
+  }
+
+  .findbar.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(-50%, 0, 0) scale(1);
+    transition:
+      transform var(--in-duration) var(--ease-in),
+      opacity var(--in-duration) var(--ease-in),
+      visibility 0s linear 0s;
+  }
+
+  .findbar-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-right: 32px;
+  }
+
+  .findbar-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 32px;
+    padding: 0 9px;
+    font-size: 13px;
+    color: #15141a;
+    background: #fff;
+    border: 1px solid #b8b8c0;
+    border-radius: 7px;
+  }
+
+  .findbar-query {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .findbar-count {
+    flex: 0 0 auto;
+    margin-left: 12px;
+    color: #5d5c65;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .icon-button {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 32px;
+    padding: 0;
+    color: #56555e;
+    font-size: 17px;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .icon-button:hover {
+    background: #ececf1;
+  }
+
+  .icon-button.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .findbar-options {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 8px 6px 2px;
+    margin-right: 32px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #27262e;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .checkbox {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    background: #fff;
+    border: 1px solid #8b8b93;
+    border-radius: 4px;
+  }
+
+  .checkbox.checked {
+    background: #2f6fed;
+    border-color: #2f6fed;
+  }
+
+  .position-panel {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    z-index: 6;
+    width: min(var(--bar-w), calc(100% - 36px));
+    padding: 12px 14px 10px;
+    background: rgb(255 255 255 / 96%);
+    border: 1px solid #d9d9df;
+    border-radius: 9px;
+    box-shadow: 0 8px 22px rgb(0 0 0 / 9%);
+    transform: translateX(-50%);
+  }
+
+  .position-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .position-row label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #45444c;
+    font-size: 12px;
+  }
+
+  .position-row input[type="number"] {
+    width: 76px;
+    height: 28px;
+    padding: 0 8px;
+    color: #15141a;
+    font: inherit;
+    font-size: 12px;
+    background: #fff;
+    border: 1px solid #c9c9d0;
+    border-radius: 6px;
+  }
+
+  .position-current {
+    margin-left: auto;
+    color: #2f6fed;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .position-slider {
+    display: block;
+    width: 100%;
+    margin: 10px 0 2px;
+    accent-color: #2f6fed;
+    cursor: pointer;
+  }
+
+  .ticks {
+    display: flex;
+    justify-content: space-between;
+    color: #8d8c95;
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .panel-note {
+    margin-top: 8px;
+    color: #8a8991;
+    font-size: 10px;
+  }
+
+  .panel-note code {
+    padding: 1px 4px;
+    color: #55545d;
+    background: #f0f0f3;
+    border-radius: 3px;
+  }
+
+  @media (max-width: 760px) {
+    .address { display: none; }
+
+    .toolbar-actions {
+      margin-left: 0;
+    }
+
+    .findbar-options {
+      gap: 12px;
+    }
+
+    .option {
+      font-size: 11px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .findbar,
+    .findbar.open {
+      transition-duration: 1ms;
+      transition-delay: 0s;
+    }
+  }
+</style>
+</head>
+<body>
+  <header class="chrome">
+    <div class="dots" aria-hidden="true">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+    <div class="address" aria-hidden="true">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+        <rect x="3" y="5" width="10" height="8" rx="1.5"></rect>
+        <path d="M5 5V3.5A1.5 1.5 0 0 1 6.5 2h3A1.5 1.5 0 0 1 11 3.5V5"></path>
+      </svg>
+      <span>zen-find-animation-demo</span>
+    </div>
+    <div class="toolbar-actions">
+      <button class="action primary" id="open">打开查找栏</button>
+      <button class="action" id="close">关闭</button>
+      <button class="action" id="replay">重播</button>
+      <button class="action" id="auto">自动播放</button>
+      <span class="status" id="status" aria-live="polite">已关闭</span>
+    </div>
+  </header>
+
+  <main class="viewport">
+    <div class="guide top"><span>容器顶部 y=0</span></div>
+    <div class="guide visible"><span>可见内容顶部：chrome 下沿</span></div>
+    <div class="guide position" id="position-guide"><span id="guide-label">顶部位置：150px</span></div>
+
+    <section class="page">
+      <h1>Zen Find 动画示意</h1>
+      <p>
+        这是一个仅用于确认动画节奏的临时页面，不是 Mod 的一部分。
+        查找栏的<strong>顶部边缘</strong>可以停在任意位置：
+        拖动滑块按 1/10 的步长选择，或直接输入距顶部的像素值。
+      </p>
+      <p>
+        打开时从<strong>可见顶部</strong>出现，移动到当前设定位置，同时从 0.9 倍放大到 1 倍；
+        关闭时从当前位置缩小并移动到可见顶部，再隐藏。顶部 56px 是 mock chrome 覆盖区，
+        真实 Zen 的 URL 栏也会像这样盖住内容区顶部。
+      </p>
+      <p>
+        动画只改变 <code>transform</code> 和 <code>opacity</code>，
+        不改变 <code>top</code>、宽高或阴影，避免每一帧触发布局。
+      </p>
+    </section>
+
+    <div class="findbar" id="findbar" aria-hidden="true">
+      <div class="findbar-row">
+        <div class="findbar-input">
+          <span class="findbar-query">2</span>
+          <span class="findbar-count">2/75</span>
+        </div>
+        <button class="icon-button" type="button" aria-label="上一个">⌃</button>
+        <button class="icon-button" type="button" aria-label="下一个">⌄</button>
+        <button class="icon-button close" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="findbar-options">
+        <label class="option">
+          <span class="checkbox checked">✓</span>
+          高亮全部
+        </label>
+        <label class="option">
+          <span class="checkbox"></span>
+          区分大小写
+        </label>
+        <label class="option">
+          <span class="checkbox"></span>
+          匹配变音符号
+        </label>
+        <label class="option">
+          <span class="checkbox"></span>
+          全词匹配
+        </label>
+      </div>
+    </div>
+
+    <aside class="position-panel" aria-label="弹窗位置调节">
+      <div class="position-row">
+        <label for="px-top">
+          距顶部
+          <input id="px-top" type="number" min="0" step="1" value="150" inputmode="numeric">
+          px
+        </label>
+        <span class="position-current" id="position-current">1/6</span>
+      </div>
+
+      <input class="position-slider" id="fraction" type="range" min="0" max="10" step="1" value="2"
+        aria-label="弹窗顶部位置，从 0 到 1">
+      <div class="ticks" aria-hidden="true">
+        <span>0</span><span>1/10</span><span>2/10</span><span>3/10</span><span>4/10</span>
+        <span>5/10</span><span>6/10</span><span>7/10</span><span>8/10</span><span>9/10</span><span>1</span>
+      </div>
+
+      <div class="panel-note">
+        滑块按 1/10 步长；顶部 56px 是 mock chrome 覆盖区，入场从 chrome 下沿开始。
+        改完按“重播”查看入场；入场 180ms · 退场 140ms。
+      </div>
+    </aside>
+  </main>
+
+<script>
+  const findbar = document.querySelector('#findbar');
+  const status = document.querySelector('#status');
+  const openButton = document.querySelector('#open');
+  const closeButton = document.querySelector('#close');
+  const replayButton = document.querySelector('#replay');
+  const autoButton = document.querySelector('#auto');
+  const viewport = document.querySelector('.viewport');
+  const pxInput = document.querySelector('#px-top');
+  const fractionInput = document.querySelector('#fraction');
+  const positionCurrent = document.querySelector('#position-current');
+  const positionGuide = document.querySelector('#position-guide');
+  const guideLabel = document.querySelector('#guide-label');
+
+  let restMode = 'fraction';
+  let restFraction = 1 / 6;
+  let autoPlaying = false;
+  let autoTimer = 0;
+  let openTimer = 0;
+
+  function setPosition(px, mode, label) {
+    const height = viewport.clientHeight;
+    const clamped = Math.max(0, Math.min(height, Math.round(px)));
+
+    findbar.style.setProperty('--rest-top', `${clamped}px`);
+    positionGuide.style.top = `${clamped}px`;
+    pxInput.value = clamped;
+
+    const ratio = height ? clamped / height : 0;
+    const step = Math.round(ratio * 10);
+    fractionInput.value = step;
+
+    if (label) {
+      positionCurrent.textContent = label;
+    } else if (Math.abs(ratio * 10 - step) < 0.01) {
+      positionCurrent.textContent =
+        step === 0 ? '0' : step === 10 ? '1' : `${step}/10`;
+    } else {
+      positionCurrent.textContent = `${(ratio * 100).toFixed(1)}%（自定义）`;
+    }
+
+    guideLabel.textContent = `顶部位置：${clamped}px`;
+    restMode = mode;
+    restFraction = ratio;
+  }
+
+  function openFindbar() {
+    findbar.classList.add('open');
+    findbar.setAttribute('aria-hidden', 'false');
+    status.textContent = '打开中';
+  }
+
+  function closeFindbar() {
+    findbar.classList.remove('open');
+    findbar.setAttribute('aria-hidden', 'true');
+    status.textContent = '关闭中';
+  }
+
+  function clearTimers() {
+    window.clearTimeout(autoTimer);
+    window.clearTimeout(openTimer);
+  }
+
+  function replay() {
+    clearTimers();
+    findbar.classList.remove('open');
+    status.textContent = '准备重播';
+    openTimer = window.setTimeout(openFindbar, 180);
+  }
+
+  function stopAuto() {
+    autoPlaying = false;
+    autoButton.textContent = '自动播放';
+    clearTimers();
+  }
+
+  function autoStep() {
+    if (!autoPlaying) return;
+    openFindbar();
+    autoTimer = window.setTimeout(() => {
+      if (!autoPlaying) return;
+      closeFindbar();
+      autoTimer = window.setTimeout(autoStep, 740);
+    }, 1250);
+  }
+
+  openButton.addEventListener('click', () => {
+    stopAuto();
+    openFindbar();
+  });
+
+  closeButton.addEventListener('click', () => {
+    stopAuto();
+    closeFindbar();
+  });
+
+  replayButton.addEventListener('click', () => {
+    stopAuto();
+    replay();
+  });
+
+  autoButton.addEventListener('click', () => {
+    if (autoPlaying) {
+      stopAuto();
+      return;
+    }
+    autoPlaying = true;
+    autoButton.textContent = '停止自动播放';
+    clearTimers();
+    autoStep();
+  });
+
+  findbar.querySelector('.close').addEventListener('click', closeFindbar);
+
+  findbar.addEventListener('transitionend', (event) => {
+    if (event.propertyName !== 'transform') return;
+    status.textContent = findbar.classList.contains('open') ? '已打开' : '已关闭';
+  });
+
+  pxInput.addEventListener('input', () => {
+    const value = Number(pxInput.value);
+    if (Number.isFinite(value)) setPosition(value, 'custom');
+  });
+
+  fractionInput.addEventListener('input', () => {
+    const height = viewport.clientHeight;
+    setPosition((height * Number(fractionInput.value)) / 10, 'fraction');
+  });
+
+  window.addEventListener('resize', () => {
+    const height = viewport.clientHeight;
+    if (restMode === 'fraction') {
+      setPosition(height * restFraction, 'fraction');
+    } else {
+      setPosition(Number(pxInput.value) || 0, 'custom');
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      stopAuto();
+      closeFindbar();
+    }
+  });
+
+  setPosition(viewport.clientHeight / 6, 'fraction', '1/6');
+  window.setTimeout(openFindbar, 380);
+</script>
+</body>
+</html>
