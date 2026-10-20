@@ -1,4 +1,4 @@
-"""Offline development installer for Zen 1.22b; never loads browser scripts."""
+"""Offline development installer for Zen 1.23.3b; never loads browser scripts."""
 import argparse
 import json
 import shutil
@@ -66,7 +66,7 @@ def _install_locked(profile):
                            ("README.md", "readme.md")):
         shutil.copy2(ROOT / source, destination / target)
     registry.write_text(json.dumps(updated, ensure_ascii=False, indent=2) + "\n")
-    stylesheet.write_text("/* Local development install for Zen 1.22b. */\n" + "\n".join(styles))
+    stylesheet.write_text("/* Local development install for Zen 1.23.3b. */\n" + "\n".join(styles))
     print(f"已安装到 {destination}\n备份：{backup}")
 
 
