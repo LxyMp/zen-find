@@ -27,9 +27,10 @@ Open **Settings → Zen Mods → Zen Find** to change the position or enable com
 
 ## Compatibility
 
-- Baseline: Zen 1.22b (Gecko 155.0.1).
-- Layout, nine positions, narrow panel, compact mode and focus styles verified on Zen 1.23.3b (Gecko 158.0).
-- Full interaction and theme acceptance on 1.23.3b is still in progress.
+- Current target: Zen 1.23.3b (Gecko 158.0).
+- Historical baseline: Zen 1.22b (Gecko 155.0.1).
+- Verified on Zen 1.23.3b: input, Enter/Shift+Enter, Esc, no-match state, all native options, nine positions, narrow panels, sidebar, compact mode, split view, light/dark themes, custom background and disabling the mod.
+- The 1.22b build was not re-tested in this round.
 
 ## Notes
 
