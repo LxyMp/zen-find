@@ -2,13 +2,13 @@
 findbar {
   --zen-find-x: -50%;
   --zen-find-y: 0%;
-  --zen-find-count-width: min(140px, 40cqw);
+  --zen-find-count-width: min(180px, 42cqw);
   --zen-find-count-right: 114px;
   position: absolute !important;
   /* Native grid-area: findbar is a collapsed bottom row when out of flow. */
   grid-area: browserstack !important;
-  inset: 12px auto auto 50% !important;
-  transform: translate(var(--zen-find-x), var(--zen-find-y)) !important;
+  inset: 40px auto auto 50% !important;
+  transform: translate(var(--zen-find-x), var(--zen-find-y)) scale(1) !important;
   z-index: 10 !important;
   box-sizing: border-box;
   width: min(560px, calc(100% - 24px));
@@ -28,11 +28,41 @@ findbar {
   backdrop-filter: none !important;
   box-shadow: 0 1px 3px rgb(0 0 0 / 18%),
     0 8px 24px light-dark(rgb(0 0 0 / 14%), rgb(0 0 0 / 32%));
-  transition: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  will-change: transform, opacity;
+  transition:
+    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s linear 0s !important;
 }
 
 findbar[hidden] {
-  display: none !important;
+  display: flex !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform:
+    translate(var(--zen-find-x), calc(var(--zen-find-y) - 40px))
+    scale(0.9) !important;
+  transition:
+    transform 140ms cubic-bezier(0.4, 0, 1, 1),
+    opacity 140ms cubic-bezier(0.4, 0, 1, 1),
+    visibility 0s linear 140ms !important;
+}
+
+/* Keep the native content painted while the outer box fades out. */
+findbar[hidden] > .findbar-container,
+findbar[hidden] > .findbar-closebutton {
+  opacity: 1 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  findbar,
+  findbar[hidden] {
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
 }
 
 findbar .findbar-container {
@@ -71,7 +101,7 @@ findbar .findbar-textbox {
 
 /* Reserve input space only while the native count is visible. */
 findbar:has(.found-matches:not([hidden])) .findbar-textbox {
-  padding-right: calc(var(--zen-find-count-width) + 16px) !important;
+  padding-right: calc(var(--zen-find-count-width) + 18px) !important;
 }
 
 findbar .found-matches:not([hidden]) {
